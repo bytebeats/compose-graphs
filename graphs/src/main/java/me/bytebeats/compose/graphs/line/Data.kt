@@ -21,18 +21,30 @@ import java.text.DecimalFormat
  * Quote: Peasant. Educated. Worker
  */
 
-/**
- * represents a point in the graph
- * @property x
- * @property y
- * @constructor Create a point
- */
 
 private fun Float.string() = DecimalFormat("#.#").format(this)
 
+/**
+ * represents a point in the graph
+ * @property x          the x coordinate or the number in the x axis
+ * @property y          the y coordinate or the number in the y axis
+ * @constructor Create a point
+ */
 internal data class PointF(val x: Float, val y: Float)
 
-
+/**
+ * X axis
+ *
+ * Configuration of the X Axis
+ *
+ * @property stepSize       the distance between two adjacent data points
+ * @property steps          the number of values to be drawn in the axis
+ * @property unit           Represent the range of values in the x axis. For example if this is 1, then the values in x axis would be (0, 1, 2, 3, ..., steps-1). If this is 0.1, then the values in x axis would be (0, 0.1, 0.2, 0.3, ...)
+ * @property paddingTop     the top padding of the X axis
+ * @property paddingBottom  the bottom padding of the X axis
+ * @property roundToInt     if true, the values is X axis are represented by Integers. If false, the values could be decimal values, with 1 decimal precision in the default implementation
+ * @property content        A composable where you could provide how the values should be rendered. The default implementation is to show a [Text] composable. You are provided with the min value in x axis, the offset between two x coordinates and the max value in x axis
+ */
 internal data class XAxis(
     val stepSize: Dp = 20.dp,
     val steps: Int = 10,
@@ -57,6 +69,19 @@ internal data class XAxis(
     }
 )
 
+/**
+ * Y axis
+ *
+ * Configuration of the Y Axis
+ *
+ * @property steps          the number of values to be drawn in the axis
+ * @property roundToInt     if true, the values is Y axis are represented by Integers. If false, the values could be decimal values, with 1 decimal precision in the default implementation
+ * @property paddingStart   the start padding of the Y axis
+ * @property paddingEnd     the end padding of the Y axis
+ * @property content        A composable where you could provide how the values should be rendered. The default
+ * implementation is to show a [Text] composable. You are provided with the min value in y axis, the offset
+ * between two y coordinates and the max value in y axis
+ */
 internal data class YAxis(
     val steps: Int = 5,
     val roundToInt: Boolean = true,
@@ -77,26 +102,18 @@ internal data class YAxis(
     }
 )
 
-internal data class Plot(
-    val lines: List<Line>,
-    val grid: Grid? = null,
-    val selection: Selection = Selection(),
-    val xAxis: XAxis = XAxis(),
-    val yAxis: YAxis = YAxis(),
-    val isZoomAllowed: Boolean = true,
-    val paddingTop: Dp = 16.dp,
-    val paddingEnd: Dp = 0.dp,
-    val horizontalExtraSpace: Dp = 6.dp
-)
-
-internal data class Line(
-    val points: List<PointF>,
-    val connection: Connection?,
-    val intersection: Intersection?,
-    val highLight: HighLight? = null,
-    val areaUnderLine: AreaUnderLine? = null
-)
-
+/**
+ * High light
+ * Represents a selected PointF
+ * @property color
+ * @property radius
+ * @property alpha
+ * @property style
+ * @property colorFilter
+ * @property blendMode
+ * @property onDraw
+ * @constructor Create empty High light
+ */
 internal data class HighLight(
     val color: Color = Color.Black,
     val radius: Dp = 6.dp,
@@ -186,4 +203,24 @@ internal data class Grid(
             drawLine(color, Offset(start, y), Offset(end, y), lineWidth.toPx())
         }
     }
+)
+
+internal data class Line(
+    val points: List<PointF>,
+    val connection: Connection?,
+    val intersection: Intersection?,
+    val highLight: HighLight? = null,
+    val areaUnderLine: AreaUnderLine? = null
+)
+
+internal data class Plot(
+    val lines: List<Line>,
+    val grid: Grid? = null,
+    val selection: Selection = Selection(),
+    val xAxis: XAxis = XAxis(),
+    val yAxis: YAxis = YAxis(),
+    val isZoomAllowed: Boolean = true,
+    val paddingTop: Dp = 16.dp,
+    val paddingEnd: Dp = 0.dp,
+    val horizontalExtraSpace: Dp = 6.dp
 )
