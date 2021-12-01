@@ -7,7 +7,10 @@ import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -78,8 +81,20 @@ private fun axisXScale(points: List<PointF>, plot: Plot): Triple<Float, Float, F
 private fun isDragLocked(dragOffset: Float, offset: Offset, xOffset: Float): Boolean =
     dragOffset in (offset.x - xOffset / 2)..(offset.x + xOffset / 2)
 
-internal data class TripleComponent(val min: Float, val max: Float, val scale: Float)
-
+/**
+ * Line graph
+ * A composable that draws a Line graph with the configurations provided by the [Plot]. The graph
+ * can be scrolled, zoomed and touch dragged for selection. Every part of the line graph can be customized,
+ * by changing the configuration in the [Plot].
+ *
+ * @param plot              the configuration to render the full graph
+ * @param modifier          Modifier
+ * @param onSelectionStart  invoked when the selection has started
+ * @param onSelectionEnd    invoked when the selection has ended
+ * @param onSelection       invoked when selection changes from one point to the next. You are provided
+ * with the xOffset where the selection occurred in the graph and the [PointF]s that are selected. If there
+ * are multiple lines, you will get multiple data points.
+ */
 @Composable
 fun LineGraph(
     plot: Plot,
