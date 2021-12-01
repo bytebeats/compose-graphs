@@ -1,10 +1,13 @@
 package me.bytebeats.compose.graphs.app.line
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +15,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.bytebeats.compose.graphs.app.line.model.points1
@@ -22,6 +26,7 @@ import me.bytebeats.compose.graphs.app.ui.theme.LightGreen600
 import me.bytebeats.compose.graphs.line.LineGraph
 import me.bytebeats.compose.graphs.line.Plot
 import me.bytebeats.compose.graphs.line.PointF
+import java.text.DecimalFormat
 
 /**
  * Created by bytebeats on 2021/12/1 : 19:24
@@ -77,6 +82,7 @@ private fun LineGraphPreview() {
         ) {
             LineGraph1(lines = listOf(points1, points2))
             LineGraph2(lines = listOf(points1, points2))
+            LineGraph3(lines = listOf(points1))
         }
     }
 }
@@ -118,6 +124,62 @@ fun LineGraph2(lines: List<List<PointF>>) {
             ),
             grid = Plot.Grid(Color.LightGray),
             paddingEnd = 15.dp,
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp)
+    )
+}
+
+@Composable
+fun LineGraph3(lines: List<List<PointF>>) {
+    LineGraph(
+        plot = Plot(
+            lines = listOf(
+                Plot.Line(
+                    points = lines[0],
+                    connection = Plot.Connection(Color.Blue, 2.dp),
+                    intersection = Plot.Intersection(Color.Blue, 4.dp),
+                    highlight = Plot.Highlight(Color.Red, 6.dp),
+                    underline = Plot.Underline(Color.Blue, .1F)
+                ),
+            ),
+            grid = Plot.Grid(Color.LightGray.copy(0.5F)),
+            xAxis = Plot.XAxis(steps = 24) { min, offset, max ->
+                for (i in 0 until 24) {
+                    val value = min + i * offset
+                    Column {
+                        val isMajor = value.rem(4) == 0F
+                        val radius = if (isMajor) 6F else 3F
+                        val color = MaterialTheme.colors.onSurface
+                        Canvas(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .height(20.dp),
+                            onDraw = {
+                                drawCircle(
+                                    color = color,
+                                    radius = radius * density,
+                                    Offset(0f, 10F * density)
+                                )
+                            }
+                        )
+                        if (isMajor) {
+                            Text(
+                                text = DecimalFormat("#.#").format(value),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.caption,
+                                color = color
+                            )
+                        }
+                    }
+                    if (value > max) {
+                        break
+                    }
+                }
+            },
+            paddingEnd = 10.dp,
         ),
         modifier = Modifier
             .fillMaxWidth()
