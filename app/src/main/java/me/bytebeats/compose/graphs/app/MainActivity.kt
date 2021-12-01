@@ -10,13 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import me.bytebeats.compose.graphs.app.ui.theme.ComposegraphsTheme
+import me.bytebeats.compose.graphs.app.ui.theme.ComposeGraphsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ComposegraphsTheme {
+            ComposeGraphsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -37,7 +37,7 @@ fun Greeting(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    ComposegraphsTheme {
+    ComposeGraphsTheme {
         Greeting("Android")
     }
 }

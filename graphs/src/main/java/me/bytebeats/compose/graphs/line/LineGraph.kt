@@ -178,7 +178,7 @@ fun LineGraph(
                     maxScrollOffset.value =
                         if (xLastPoint > size.width) xLastPoint - size.width else 0F
 
-                    val dragLocks = mutableMapOf<Line, Pair<PointF, Offset>>()
+                    val dragLocks = mutableMapOf<Plot.Line, Pair<PointF, Offset>>()
 
                     /*  draw grid lines  */
                     val top = yBottom - (maxY - minY) * yOffset
@@ -261,7 +261,7 @@ fun LineGraph(
                     /*  draw drag selection highlight  */
                     if (isDragging.value) {
                         /*  draw drag line highlight  */
-                        dragLocks.values.firstOrNull()?.let { (point, location) ->
+                        dragLocks.values.firstOrNull()?.let { (_, location) ->
                             val (x, _) = location
                             if (x >= columnWidth.value && x <= size.width - paddingEnd.toPx()) {
                                 plot.selection.highlight?.onDraw?.invoke(
