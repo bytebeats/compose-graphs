@@ -30,7 +30,7 @@ private fun Float.string() = DecimalFormat("#.#").format(this)
  * @property y          the y coordinate or the number in the y axis
  * @constructor Create a point
  */
-internal data class PointF(val x: Float, val y: Float)
+data class PointF(val x: Float, val y: Float)
 
 /**
  * X axis
@@ -45,7 +45,7 @@ internal data class PointF(val x: Float, val y: Float)
  * @property roundToInt     if true, the values is X axis are represented by Integers. If false, the values could be decimal values, with 1 decimal precision in the default implementation
  * @property content        A composable where you could provide how the values should be rendered. The default implementation is to show a [Text] composable. You are provided with the min value in x axis, the offset between two x coordinates and the max value in x axis
  */
-internal data class XAxis(
+data class XAxis(
     val stepSize: Dp = 20.dp,
     val steps: Int = 10,
     val unit: Float = 1F,
@@ -82,7 +82,7 @@ internal data class XAxis(
  * implementation is to show a [Text] composable. You are provided with the min value in y axis, the offset
  * between two y coordinates and the max value in y axis
  */
-internal data class YAxis(
+data class YAxis(
     val steps: Int = 5,
     val roundToInt: Boolean = true,
     val paddingStart: Dp = 16.dp,
@@ -114,7 +114,7 @@ internal data class YAxis(
  * @property onDraw         override this to change the default drawCircle implementation. You are provided
  * with the 'center' [Offset]
  */
-internal data class Highlight(
+data class Highlight(
     val color: Color = Color.Black,
     val radius: Dp = 6.dp,
     val alpha: Float = .1F,
@@ -138,7 +138,7 @@ internal data class Highlight(
  * @property onDraw         override this to change the default drawCircle implementation. You are provided
  * with the 'center' [Offset] and the actual [DataPoint] that represents the intersection.
  */
-internal data class Intersection(
+data class Intersection(
     val color: Color = Color.Blue,
     val radius: Dp = 6.dp,
     val alpha: Float = .1F,
@@ -165,7 +165,7 @@ internal data class Intersection(
  * @property onDraw         override this to change the default drawLine implementation. You are provided with
  * the 'start' [Offset] and 'end' [Offset]
  */
-internal data class Connection(
+data class Connection(
     val color: Color = Color.Blue,
     val strokeWidth: Dp = 3.dp,
     val strokeCap: StrokeCap = Stroke.DefaultCap,
@@ -194,13 +194,13 @@ internal data class Connection(
  *
  * @property enable         if true, you can touch and drag to select the points. The point currently selected
  * is exposed via the [onSelection] param in the [LineGraph]. If false, the drag gesture is disabled.
- * @property highLight      controls how the selection is represented in the graph. The default implementation
+ * @property highlight      controls how the selection is represented in the graph. The default implementation
  * is a vertical dashed line. You can override this by supplying your own [Connection]
  * @property detectionTime  the time taken for the touch to be recognised as a drag gesture
  */
-internal data class Selection(
+data class Selection(
     val enable: Boolean = true,
-    val highLight: Connection? = Connection(
+    val highlight: Connection? = Connection(
         Color.Red, strokeWidth = 2.dp,
         pathEffect = PathEffect.dashPathEffect(
             floatArrayOf(40F, 20F)
@@ -222,7 +222,7 @@ internal data class Selection(
  * @property onDraw         override this to change the default drawPath implementation. You are provided with
  * the [Path] of the line
  */
-internal data class Underline(
+data class Underline(
     val color: Color = Color.Blue,
     val alpha: Float = .1F,
     val style: DrawStyle = Fill,
@@ -251,7 +251,7 @@ internal data class Underline(
  * horizontal lines based on the number of [steps]. You are provided with the [Rect] region available
  * to draw the grid, xOffset (the gap between two points in the x-axis) and the yOffset.
  */
-internal data class Grid(
+data class Grid(
     val color: Color,
     val steps: Int = 5,
     val lineWidth: Dp = 1.dp,
@@ -274,16 +274,16 @@ internal data class Grid(
  * from decreasing to increasing value, so that the graph can be drawn properly.
  * @property connection     drawing logic for the line between two adjacent points. If null, no line is drawn.
  * @property intersection   drawing logic to draw the point itself. If null, the point is not drawn.
- * @property highLight      drawing logic to draw the highlight at the point when it is selected. If null, the point
+ * @property highlight      drawing logic to draw the highlight at the point when it is selected. If null, the point
  * won't be highlighted on selection
  * @property underline      drawing logic for the area under the line. This is the region that is formed by the
  * intersection of the line, x-axis and y-axis.
  */
-internal data class Line(
+data class Line(
     val points: List<PointF>,
     val connection: Connection?,
     val intersection: Intersection?,
-    val highLight: Highlight? = null,
+    val highlight: Highlight? = null,
     val underline: Underline? = null
 )
 
@@ -304,7 +304,7 @@ internal data class Line(
  * @property horizontalExtraSpace   gives extra space to draw [Intersection] or [Highlight] at the left and right
  * extremes of the graph. Adjust this if your graph looks like cropped at the left edge or the right edge.
  */
-internal data class Plot(
+data class Plot(
     val lines: List<Line>,
     val grid: Grid? = null,
     val selection: Selection = Selection(),
