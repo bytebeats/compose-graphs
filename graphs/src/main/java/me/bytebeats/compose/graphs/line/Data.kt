@@ -103,18 +103,18 @@ internal data class YAxis(
 )
 
 /**
- * High light
+ * Highlight
  * Represents a selected PointF
- * @property color
- * @property radius
- * @property alpha
- * @property style
- * @property colorFilter
- * @property blendMode
- * @property onDraw
- * @constructor Create empty High light
+ * @property color          The color or fill to be applied to the circle
+ * @property radius         The radius of the circle
+ * @property alpha          Opacity to be applied to the circle from 0.0f to 1.0f representing fully transparent to fully opaque respectively
+ * @property style          Whether the circle is stroked or filled in
+ * @property colorFilter    ColorFilter to apply to the [color] when drawn into the destination
+ * @property blendMode      Blending algorithm to be applied to the brush
+ * @property onDraw         override this to change the default drawCircle implementation. You are provided
+ * with the 'center' [Offset]
  */
-internal data class HighLight(
+internal data class Highlight(
     val color: Color = Color.Black,
     val radius: Dp = 6.dp,
     val alpha: Float = .1F,
@@ -126,6 +126,18 @@ internal data class HighLight(
     }
 )
 
+/**
+ * Intersection Represents a pointF on the graph
+ *
+ * @property color          The color or fill to be applied to the circle
+ * @property radius         The radius of the circle
+ * @property alpha          Opacity to be applied to the circle from 0.0f to 1.0f representing fully transparent to fully opaque respectively
+ * @property style          Whether the circle is stroked or filled in
+ * @property colorFilter    ColorFilter to apply to the [color] when drawn into the destination
+ * @property blendMode      Blending algorithm to be applied to the brush
+ * @property onDraw         override this to change the default drawCircle implementation. You are provided
+ * with the 'center' [Offset] and the actual [DataPoint] that represents the intersection.
+ */
 internal data class Intersection(
     val color: Color = Color.Blue,
     val radius: Dp = 6.dp,
@@ -138,6 +150,21 @@ internal data class Intersection(
     }
 )
 
+/**
+ * Connection
+ * Represents a line between two pointFs
+ *
+ * @property color          the color to be applied to the line
+ * @property strokeWidth    The stroke width to apply to the line
+ * @property strokeCap      treatment applied to the ends of the line segment
+ * @property pathEffect     optional effect or pattern to apply to the line
+ * @property alpha          opacity to be applied to the [color] from 0.0f to 1.0f representing
+ * fully transparent to fully opaque respectively
+ * @property colorFilter    ColorFilter to apply to the [color] when drawn into the destination
+ * @property blendMode      the blending algorithm to apply to the [color]
+ * @property onDraw         override this to change the default drawLine implementation. You are provided with
+ * the 'start' [Offset] and 'end' [Offset]
+ */
 internal data class Connection(
     val color: Color = Color.Blue,
     val strokeWidth: Dp = 3.dp,
@@ -161,6 +188,16 @@ internal data class Connection(
     }
 )
 
+/**
+ * Selection
+ * Configuration for the selection operation
+ *
+ * @property enable         if true, you can touch and drag to select the points. The point currently selected
+ * is exposed via the [onSelection] param in the [LineGraph]. If false, the drag gesture is disabled.
+ * @property highLight      controls how the selection is represented in the graph. The default implementation
+ * is a vertical dashed line. You can override this by supplying your own [Connection]
+ * @property detectionTime  the time taken for the touch to be recognised as a drag gesture
+ */
 internal data class Selection(
     val enable: Boolean = true,
     val highLight: Connection? = Connection(
@@ -172,7 +209,20 @@ internal data class Selection(
     val detectionTime: Long = 100L
 )
 
-internal data class AreaUnderLine(
+/**
+ * Underline Controls the drawing behaviour of the area under the line. This is the region formed by intersection
+ * of the Line, x-axis and y-axis.
+ *
+ * @property color          Color to be applied to the path
+ * @property alpha          Opacity to be applied to the path from 0.0f to 1.0f representing
+ * fully transparent to fully opaque respectively
+ * @property style          Whether the path is stroked or filled in
+ * @property colorFilter    ColorFilter to apply to the [color] when drawn into the destination
+ * @property blendMode      Blending algorithm to be applied to the path when it is drawn
+ * @property onDraw         override this to change the default drawPath implementation. You are provided with
+ * the [Path] of the line
+ */
+internal data class Underline(
     val color: Color = Color.Blue,
     val alpha: Float = .1F,
     val style: DrawStyle = Fill,
@@ -190,6 +240,17 @@ internal data class AreaUnderLine(
     }
 )
 
+/**
+ * Grid
+ * Controls how the grid is drawn on the Graph
+ * @property color          the color to be applied
+ * @property steps          the number of lines drawn in the grid. The default implementation considers this
+ * as the horizontal lines
+ * @property lineWidth      the width of the lines
+ * @property onDraw         override this to change the default drawLine implementation (which is to draw multiple
+ * horizontal lines based on the number of [steps]. You are provided with the [Rect] region available
+ * to draw the grid, xOffset (the gap between two points in the x-axis) and the yOffset.
+ */
 internal data class Grid(
     val color: Color,
     val steps: Int = 5,
@@ -205,14 +266,44 @@ internal data class Grid(
     }
 )
 
+/**
+ * Line
+ * Represent a Line in the [LineGraph]
+ *
+ * @property points         list of points in the line. Note that this list should be sorted by x coordinate
+ * from decreasing to increasing value, so that the graph can be drawn properly.
+ * @property connection     drawing logic for the line between two adjacent points. If null, no line is drawn.
+ * @property intersection   drawing logic to draw the point itself. If null, the point is not drawn.
+ * @property highLight      drawing logic to draw the highlight at the point when it is selected. If null, the point
+ * won't be highlighted on selection
+ * @property underline      drawing logic for the area under the line. This is the region that is formed by the
+ * intersection of the line, x-axis and y-axis.
+ */
 internal data class Line(
     val points: List<PointF>,
     val connection: Connection?,
     val intersection: Intersection?,
-    val highLight: HighLight? = null,
-    val areaUnderLine: AreaUnderLine? = null
+    val highLight: Highlight? = null,
+    val underline: Underline? = null
 )
 
+/**
+ * Plot
+ * The configuration for the [LineGraph]
+ *
+ * @property lines  list of lines to be represented
+ * @property grid   rendering logic on how the [Grid] should be drawn. If null, no grid is drawn.
+ * @property selection  controls the touch and drag selection behaviour using [Selection]
+ * @property xAxis  controls the behaviour, scale and drawing logic of the X Axis
+ * @property yAxis  controls the behaviour, scale and drawing logic of the Y Axis
+ * @property isZoomAllowed  if true, the graph will zoom on pinch zoom. If false, no zoom action.
+ * @property paddingTop adjusts the top padding of the graph. If you want to adjust the bottom padding, adjust
+ * the [XAxis.paddingBottom]
+ * @property paddingEnd adjust the right padding of the graph. If you want to adjust the left padding, adjust
+ * the [YAxis.paddingStart]
+ * @property horizontalExtraSpace   gives extra space to draw [Intersection] or [Highlight] at the left and right
+ * extremes of the graph. Adjust this if your graph looks like cropped at the left edge or the right edge.
+ */
 internal data class Plot(
     val lines: List<Line>,
     val grid: Grid? = null,
