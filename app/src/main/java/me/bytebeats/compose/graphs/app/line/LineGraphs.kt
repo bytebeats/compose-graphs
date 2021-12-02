@@ -25,9 +25,7 @@ import androidx.compose.ui.unit.dp
 import me.bytebeats.compose.graphs.app.component.RoundRectangle
 import me.bytebeats.compose.graphs.app.line.model.points1
 import me.bytebeats.compose.graphs.app.line.model.points2
-import me.bytebeats.compose.graphs.app.ui.theme.ComposeGraphsTheme
-import me.bytebeats.compose.graphs.app.ui.theme.Green900
-import me.bytebeats.compose.graphs.app.ui.theme.LightGreen600
+import me.bytebeats.compose.graphs.app.ui.theme.*
 import me.bytebeats.compose.graphs.line.LineGraph
 import me.bytebeats.compose.graphs.line.Plot
 import me.bytebeats.compose.graphs.line.PointF
@@ -309,6 +307,28 @@ private fun ScoreRow(title: String, value: Float, color: Color) {
     }
 }
 
+@Composable
+fun LineGraph5(lines: List<List<PointF>>) {
+    LineGraph(
+        plot = Plot(
+            lines = listOf(
+                Plot.Line(
+                    points = lines[0],
+                    connection = Plot.Connection(color = Red300),
+                    intersection = Plot.Intersection(color = Red300),
+                    highlight = Plot.Highlight(color = Yellow700),
+                )
+            ),
+            xAxis = Plot.XAxis(unit = 0.1F, roundToInt = true),
+            yAxis = Plot.YAxis(steps = 4, roundToInt = true),
+            grid = Plot.Grid(color = Red500, steps = 4)
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp)
+    )
+}
+
 @Preview(showBackground = true, showSystemUi = true)
 @Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -324,6 +344,7 @@ private fun LineGraphPreview() {
 //            LineGraph2(lines = listOf(points1, points2))
 //            LineGraph3(lines = listOf(points1))
             LineGraph4(lines = listOf(points1, points2), Modifier)
+            LineGraph5(lines = listOf(points1, points2))
         }
     }
 }
