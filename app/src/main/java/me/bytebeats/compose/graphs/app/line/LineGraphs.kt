@@ -214,7 +214,9 @@ fun LineGraph4(lines: List<List<PointF>>, modifier: Modifier) {
                                 style = MaterialTheme.typography.subtitle1,
                                 color = Color.Gray
                             )
-                            ScoreRow(title = "Today", value = points[1].y, color = Color.Blue)
+                            if (points.size > 1) {
+                                ScoreRow(title = "Today", value = points[1].y, color = Color.Blue)
+                            }
                             ScoreRow(title = "Yesterday", value = y, color = Color.Gray)
                         }
                     }
