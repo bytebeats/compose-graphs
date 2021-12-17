@@ -11,7 +11,7 @@ import kotlin.random.Random
  */
 
 private fun generatePoints(
-    offset: Float,
+    startX: Float,
     step: Float,
     count: Int,
     startY: Float,
@@ -19,7 +19,7 @@ private fun generatePoints(
 ): List<PointF> {
     val points = mutableListOf<PointF>()
     for (i in 0 until count) {
-        val x = offset + step * i
+        val x = startX + step * i
         val y = Random.Default.nextDouble(startY.toDouble(), endY.toDouble()).toFloat()
         points.add(PointF(x, y))
     }

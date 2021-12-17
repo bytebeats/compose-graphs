@@ -32,7 +32,7 @@ class MainViewModelImpl : ViewModel(), MainViewModel {
         get() = mutableStateOf(
             listOf(
                 listOf(points1, points2),
-                listOf(points3, points2),
+                listOf(points2, points1),
                 listOf(points1, points2),
                 listOf(points1, points2),
                 listOf(points4, points3),
